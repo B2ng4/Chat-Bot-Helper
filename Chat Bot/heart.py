@@ -34,13 +34,14 @@ longpoll = VkLongPoll(vk_session)
 
 # Основной цикл обработки событий
 for event in longpoll.listen():
+    keyboard = create_keyboard()
     if event.type == VkEventType.MESSAGE_NEW and event.to_me:
         user_id = event.user_id
         message = event.text.lower()
 
 
         welcome_message = 'Здравствуйте! Я умный цифровой помощник главы города Мирный. Что Вас интересует?'
-        keyboard = create_keyboard()
+
         send_message(user_id, welcome_message, keyboard)
 
         if message == 'подача обращения':
@@ -76,10 +77,6 @@ for event in longpoll.listen():
             email()
 
             send_message(user_id, 'Прикрепите ваше обращение')
-
-
-
-
 
 
         elif message == 'ответы на вопросы':
