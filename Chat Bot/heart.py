@@ -75,6 +75,7 @@ for event in longpoll.listen():
                         send_message(user_id, f'Ваша введенная электронная почта {input_mail}')
                         break
             email()
+            send_message(user_id, keyboard)
 
 
         elif message == 'ответы на вопросы':
