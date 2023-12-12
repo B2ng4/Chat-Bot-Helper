@@ -15,4 +15,4 @@ for event in longpool.listen():
             msg = event.text.lower()
             id = event.user_id
             if msg == "hi":
-                send_some_msg(id, "Hi friend!")
+                send_some_msg(id, "Hi kostya!")
