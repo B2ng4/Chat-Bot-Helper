@@ -39,12 +39,12 @@ for event in longpoll.listen():
         user_id = event.user_id
         message = event.text.lower()
 
+        if message == 'начать':
+            keyboard = create_keyboard()
+            welcome_message = 'Здравствуйте! Я умный цифровой помощник главы города Мирный. Что Вас интересует?'
+            send_message(user_id, welcome_message, keyboard)
 
-        welcome_message = 'Здравствуйте! Я умный цифровой помощник главы города Мирный. Что Вас интересует?'
-
-        send_message(user_id, welcome_message, keyboard)
-
-        if message == 'подача обращения':
+        elif message == 'подача обращения':
             send_message(user_id, 'Вы выбрали "Подача обращения"')
             send_message(user_id, 'Запишите ваше ФИО')
             def name():
@@ -75,8 +75,6 @@ for event in longpoll.listen():
                         send_message(user_id, f'Ваша введенная электронная почта {input_mail}')
                         break
             email()
-
-            send_message(user_id, 'Прикрепите ваше обращение')
 
 
         elif message == 'ответы на вопросы':
