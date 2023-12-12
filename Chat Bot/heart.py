@@ -40,7 +40,6 @@ for event in longpoll.listen():
         message = event.text.lower()
 
         if message == 'начать':
-            keyboard = create_keyboard()
             welcome_message = 'Здравствуйте! Я умный цифровой помощник главы города Мирный. Что Вас интересует?'
             send_message(user_id, welcome_message, keyboard)
 
@@ -75,18 +74,17 @@ for event in longpoll.listen():
                         send_message(user_id, f'Ваша введенная электронная почта {input_mail}')
                         break
             email()
-            send_message(user_id, keyboard)
+            send_message(user_id, "fdsfsdf", keyboard)
 
 
         elif message == 'ответы на вопросы':
-            send_message(user_id, 'Вы выбрали "Ответы на вопросы"')
-            send_message(user_id, keyboard)
+            send_message(user_id, 'Вы выбрали "Ответы на вопросы"',keyboard)
         elif message == 'сообщить о проблеме':
-            send_message(user_id, 'Вы выбрали "Сообщить о проблеме"')
-            send_message(user_id, keyboard)
+            send_message(user_id, 'Вы выбрали "Сообщить о проблеме"', keyboard)
+
         elif message == 'задать вопрос':
-            send_message(user_id, 'Вы выбрали "Задать вопрос"')
-            send_message(user_id, keyboard)
+            send_message(user_id, 'Вы выбрали "Задать вопрос"', keyboard)
+
         else:
-            send_message(user_id, 'Извините, я не понимаю ваш запрос. Пожалуйста, воспользуйтесь клавиатурой.')
-            send_message(user_id, keyboard)
+            send_message(user_id, 'Извините, я не понимаю ваш запрос. Пожалуйста, воспользуйтесь клавиатурой.', keyboard)
+
