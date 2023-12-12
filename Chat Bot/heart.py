@@ -25,6 +25,7 @@ def create_keyboard():
 
     return keyboard.get_keyboard()
 
+
 # Авторизация бота
 
 vk_session = vk_api.VkApi(token=VK_API)
@@ -45,6 +46,42 @@ for event in longpoll.listen():
 
         elif message == 'подача обращения':
             send_message(user_id, 'Вы выбрали "Подача обращения"')
+            send_message(user_id, 'Запишите ваше ФИО')
+            def name():
+                for event in longpoll.listen():
+                    if event.type == VkEventType.MESSAGE_NEW and event.to_me:
+                        user_id = event.user_id
+                        full_name = event.text.lower()
+                        send_message(user_id, f'Ваще введенное ФИО {full_name}')
+                        break
+            name()
+
+            send_message(user_id, 'Запишите ваш населенный пункт')
+            def city():
+                for event in longpoll.listen():
+                    if event.type == VkEventType.MESSAGE_NEW and event.to_me:
+                        user_id = event.user_id
+                        input_city = event.text.lower()
+                        send_message(user_id, f'Ваще введенное ФИО {input_city}')
+                        break
+            city()
+
+            send_message(user_id, 'Запишите вашу электронную почту для обратной связи')
+            def email():
+                for event in longpoll.listen():
+                    if event.type == VkEventType.MESSAGE_NEW and event.to_me:
+                        user_id = event.user_id
+                        input_mail = event.text.lower()
+                        send_message(user_id, f'Ваще введенное ФИО {input_mail}')
+                        break
+            email()
+
+            send_message(user_id, 'Прикрепите ваше обращение')
+
+
+
+
+
 
         elif message == 'ответы на вопросы':
             send_message(user_id, 'Вы выбрали "Ответы на вопросы"')
