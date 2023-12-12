@@ -3,6 +3,7 @@ import vk_api
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.longpoll import VkLongPoll, VkEventType
 from config import VK_API
+import requests
 
 # Функция для отправки сообщения
 def send_message(user_id, message, keyboard=None):
@@ -53,7 +54,7 @@ for event in longpoll.listen():
                         full_name = event.text.lower()
                         send_message(user_id, f'Ваше введенное ФИО {full_name}')
                         break
-            name()
+            # name()
 
             send_message(user_id, 'Запишите ваш населенный пункт')
             def city():
@@ -63,7 +64,7 @@ for event in longpoll.listen():
                         input_city = event.text.lower()
                         send_message(user_id, f'Ваш введенный населенный пункт {input_city}')
                         break
-            city()
+            # city()
 
             send_message(user_id, 'Запишите вашу электронную почту для обратной связи')
             def email():
@@ -73,8 +74,34 @@ for event in longpoll.listen():
                         input_mail = event.text.lower()
                         send_message(user_id, f'Ваша введенная электронная почта {input_mail}')
                         break
-            email()
-            send_message(user_id, "fdsfsdf", keyboard)
+            # email()
+
+            send_message(user_id, 'Прикрепите обращение')
+            for event in longpoll.listen():
+                if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.user_id == user_id:
+                    if event.attachments:
+                        if 'doc' in event.attachments:
+                            # Получение ID и Owner ID документа
+                            doc_id = event.attachments['doc']['id']
+                            owner_id = event.attachments['doc']['owner_id']
+
+                            # Получение информации о документе
+                            doc_info = vk.method('docs.getById', {'docs': f'{owner_id}_{doc_id}'})[0]
+                            file_url = doc_info['url']
+
+                            # Задаем путь для сохранения файла
+                            save_path = '/home/konstantin/Документы/обращение.pdf'
+
+
+            def download_file(url, path_to_save):
+                response = requests.get(url, stream=True)
+                if response.status_code == 200:
+                    with open(path_to_save, 'wb') as file:
+                        for chunk in response.iter_content(4096):
+                            file.write(chunk)
+
+
+            download_file(file_url, save_path)
 
 
         elif message == 'ответы на вопросы':
