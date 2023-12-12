@@ -4,6 +4,7 @@ from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.longpoll import VkLongPoll, VkEventType
 from config import VK_API
 import requests
+import os
 
 # Функция для отправки сообщения
 def send_message(user_id, message, keyboard=None):
@@ -79,34 +80,32 @@ for event in longpoll.listen():
             send_message(user_id, 'Прикрепите обращение')
 
 
-            def download_file(url, path_to_save):
-                response = requests.get(url, stream=True)
-                if response.status_code == 200:
-                    with open(path_to_save, 'wb') as file:
-                        for chunk in response.iter_content(4096):
-                            file.write(chunk)
+            def download_file(url, file_name, path_to_save, access):
+                try:
+                    headers = {'Authorization': access}
+                    response = requests.get(url, headers=headers)
+                    if response.status_code == 200:
+                        file_path = os.path.join(path_to_save, file_name)
+                        with open(file_path, 'wb') as file:
+                            file.write(response.content)
+                        print("File downloaded successfully!")
+                    else:
+                        print("Failed to download file. Status code:", response.status_code)
+                except Exception as e:
+                    print("An error occurred during file download:", str(e))
 
-            for event in longpoll.listen():
-                if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.user_id == user_id:
-                    if event.attachments:
-                        if 'doc' in event.attachments:
-                            # Получение ID и Owner ID документа
-                            doc_id = event.attachments['doc']['id']
-                            owner_id = event.attachments['doc']['owner_id']
 
-                            # Получение информации о документе
-                            doc_info = vk.method('docs.getById', {'docs': f'{owner_id}_{doc_id}'})
-                            file_url = doc_info[0]['url']
+            # Usage example
+            url = "https://api.vk.com/method/docs.getUploadServer"
+            access = 'access_token=vk1.a.FyHTGxC2QiBjahv1ysRJSRNk0tfc1vUmNezj_A0SXBrmodK7G1iPmc-q39FujXH4igSDJtNie7_jklwW-y2w8p_SNfSAbZZXLh5VoL2MeTiE_fSChGqLxUy1RGN19xJtPSMqeHrzHE2dEcc1Qk5MU_y4V7aMyZ-Bims-9yixntUjSWg0aoRebbi7zFBlSK68DWN6IPGCNqBoNkKgaomJfw'
+            file_name = "downloaded_file"
+            path_to_save = "/home/konstantin/Документы/GitHub/Chat-Bot-Helper/Chat Bot/doc"
 
-                            # Задаем путь для сохранения файла
-                            save_path = '/home/konstantin/Документы/Обращение.pdf'
-
-                            download_file(file_url, save_path)
-
+            download_file(url, file_name, path_to_save, access)
 
         elif message == 'ответы на вопросы':
             send_message(user_id, 'Вы выбрали "Ответы на вопросы"',keyboard)
-            
+
         elif message == 'сообщить о проблеме':
             send_message(user_id, 'Вы выбрали "Сообщить о проблеме"', keyboard)
 
@@ -115,4 +114,3 @@ for event in longpoll.listen():
 
         else:
             send_message(user_id, 'Извините, я не понимаю ваш запрос. Пожалуйста, воспользуйтесь клавиатурой.', keyboard)
-
