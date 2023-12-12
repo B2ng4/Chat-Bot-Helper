@@ -1,8 +1,8 @@
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
+from config import  VK_API
 
-
-vk_session = vk_api.VkApi(token = 'vk1.a.BHU7W_4aXKU-DjsygLxNJ6H2Mq9aVHGNlC-F6gmrhJeFmZF8hUsE-Y9_eaprFKJsSfJZJ9FC0doqFLW8_AytL-XqJY3W5huVsGpFHfXT3KEjN1V2xJoLaopwLXX_FcOwEiukY3il3V0oCEL2KSQXqI1NPhsgP3VEPayIhPYOEQLsXwaLxhwgisEBgHBCK9ikoFd4P93Suatj2zZWy5I3bg')
+vk_session = vk_api.VkApi(token=VK_API)
 session_api = vk_session.get_api()
 longpool = VkLongPoll(vk_session)
 
