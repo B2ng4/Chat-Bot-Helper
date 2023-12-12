@@ -38,13 +38,12 @@ for event in longpoll.listen():
         user_id = event.user_id
         message = event.text.lower()
 
-        if message == 'начать':
-            # Отправляем приветственное сообщение и клавиатуру
-            welcome_message = 'Здравствуйте! Я умный цифровой помощник главы города Мирный. Что Вас интересует?'
-            keyboard = create_keyboard()
-            send_message(user_id, welcome_message, keyboard)
 
-        elif message == 'подача обращения':
+        welcome_message = 'Здравствуйте! Я умный цифровой помощник главы города Мирный. Что Вас интересует?'
+        keyboard = create_keyboard()
+        send_message(user_id, welcome_message, keyboard)
+
+        if message == 'подача обращения':
             send_message(user_id, 'Вы выбрали "Подача обращения"')
             send_message(user_id, 'Запишите ваше ФИО')
             def name():
