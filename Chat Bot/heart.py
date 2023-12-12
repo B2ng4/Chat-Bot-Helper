@@ -77,20 +77,6 @@ for event in longpoll.listen():
             # email()
 
             send_message(user_id, 'Прикрепите обращение')
-            for event in longpoll.listen():
-                if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.user_id == user_id:
-                    if event.attachments:
-                        if 'doc' in event.attachments:
-                            # Получение ID и Owner ID документа
-                            doc_id = event.attachments['doc']['id']
-                            owner_id = event.attachments['doc']['owner_id']
-
-                            # Получение информации о документе
-                            doc_info = vk.method('docs.getById', {'docs': f'{owner_id}_{doc_id}'})[0]
-                            file_url = doc_info['url']
-
-                            # Задаем путь для сохранения файла
-                            save_path = '/home/konstantin/Документы/обращение.pdf'
 
 
             def download_file(url, path_to_save):
@@ -100,12 +86,27 @@ for event in longpoll.listen():
                         for chunk in response.iter_content(4096):
                             file.write(chunk)
 
+            for event in longpoll.listen():
+                if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.user_id == user_id:
+                    if event.attachments:
+                        if 'doc' in event.attachments:
+                            # Получение ID и Owner ID документа
+                            doc_id = event.attachments['doc']['id']
+                            owner_id = event.attachments['doc']['owner_id']
 
-            download_file(file_url, save_path)
+                            # Получение информации о документе
+                            doc_info = vk.method('docs.getById', {'docs': f'{owner_id}_{doc_id}'})
+                            file_url = doc_info[0]['url']
+
+                            # Задаем путь для сохранения файла
+                            save_path = '/home/konstantin/Документы/Обращение.pdf'
+
+                            download_file(file_url, save_path)
 
 
         elif message == 'ответы на вопросы':
             send_message(user_id, 'Вы выбрали "Ответы на вопросы"',keyboard)
+            
         elif message == 'сообщить о проблеме':
             send_message(user_id, 'Вы выбрали "Сообщить о проблеме"', keyboard)
 
