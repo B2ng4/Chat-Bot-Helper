@@ -51,7 +51,7 @@ for event in longpoll.listen():
                     if event.type == VkEventType.MESSAGE_NEW and event.to_me:
                         user_id = event.user_id
                         full_name = event.text.lower()
-                        send_message(user_id, f'Ваще введенное ФИО {full_name}')
+                        send_message(user_id, f'Ваше введенное ФИО {full_name}')
                         break
             name()
 
@@ -61,7 +61,7 @@ for event in longpoll.listen():
                     if event.type == VkEventType.MESSAGE_NEW and event.to_me:
                         user_id = event.user_id
                         input_city = event.text.lower()
-                        send_message(user_id, f'Ваще введенное ФИО {input_city}')
+                        send_message(user_id, f'Ваш введенный населенный пункт {input_city}')
                         break
             city()
 
@@ -71,7 +71,7 @@ for event in longpoll.listen():
                     if event.type == VkEventType.MESSAGE_NEW and event.to_me:
                         user_id = event.user_id
                         input_mail = event.text.lower()
-                        send_message(user_id, f'Ваще введенное ФИО {input_mail}')
+                        send_message(user_id, f'Ваша введенная электронная почта {input_mail}')
                         break
             email()
 
