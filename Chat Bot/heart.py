@@ -80,13 +80,13 @@ for event in longpoll.listen():
 
         elif message == 'ответы на вопросы':
             send_message(user_id, 'Вы выбрали "Ответы на вопросы"')
-
+            send_message(user_id, keyboard)
         elif message == 'сообщить о проблеме':
             send_message(user_id, 'Вы выбрали "Сообщить о проблеме"')
-
+            send_message(user_id, keyboard)
         elif message == 'задать вопрос':
             send_message(user_id, 'Вы выбрали "Задать вопрос"')
-
+            send_message(user_id, keyboard)
         else:
             send_message(user_id, 'Извините, я не понимаю ваш запрос. Пожалуйста, воспользуйтесь клавиатурой.')
-
+            send_message(user_id, keyboard)
