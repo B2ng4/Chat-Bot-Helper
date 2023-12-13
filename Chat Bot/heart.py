@@ -3,16 +3,16 @@ import vk_api
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.longpoll import VkLongPoll, VkEventType
 from config import VK_API
-import requests
-import os
+import json
 
 # Функция для отправки сообщения
-def send_message(user_id, message, keyboard=None):
+def send_message(user_id, message, keyboard=None, template=None):
     vk.messages.send(
         user_id=user_id,
         message=message,
         random_id=0,
-        keyboard=keyboard
+        keyboard=keyboard,
+        template=json.dumps(template) if template is not None else None
     )
 
 # Функция для создания клавиатуры
@@ -27,6 +27,26 @@ def create_keyboard():
 
     return keyboard.get_keyboard()
 
+# Создание карусели
+def create_keyboard_two():
+    carousel_elements = []
+    for i in range(1, 3):  # Пример с двумя элементами карусели
+        element = {
+            "title": f"Заголовок {i}",
+            "description": f"Описание {i}",
+            "buttons": [
+                {
+                    "action": {
+                        "type": "text",
+                        "label": f"Кнопка {i}",
+                        "payload": json.dumps({"button": str(i)})
+                    }
+                }
+            ]
+        }
+        carousel_elements.append(element)
+    return {"type": "carousel", "elements": carousel_elements}
+
 
 # Авторизация бота
 
@@ -37,6 +57,7 @@ longpoll = VkLongPoll(vk_session)
 # Основной цикл обработки событий
 for event in longpoll.listen():
     keyboard = create_keyboard()
+    keyboard2 = create_keyboard_two()
     if event.type == VkEventType.MESSAGE_NEW and event.to_me:
         user_id = event.user_id
         message = event.text.lower()
@@ -46,9 +67,11 @@ for event in longpoll.listen():
             send_message(user_id, welcome_message, keyboard)
 
 
+        elif message == "ответы на вопросы":
+            # Пример отправки карусели
+            send_message(user_id, "Вы выбрали Ответы на вопросы", template=keyboard2)
 
-        elif message == 'ответы на вопросы':
-            send_message(user_id, 'Вы выбрали "Ответы на вопросы"',keyboard)
+
 
         elif message == 'сообщить о проблеме':
             send_message(user_id, 'Вы выбрали "Сообщить о проблеме"', keyboard)
