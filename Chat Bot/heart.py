@@ -92,7 +92,7 @@ for event in longpoll.listen():
                         break
             received()
 
-        elif message == 'Задать вопрос':
+        elif message == 'задать вопрос':
             current_date = datetime.datetime.now().strftime('%Y-%m-%d')
             send_message(user_id, 'Задайте вопрос в свободной форме', keyboard)
             for event in longpoll.listen():
