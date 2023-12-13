@@ -12,6 +12,7 @@ from email.mime.text import MIMEText
 from topics import  GigResponse
 import sqlite3
 import datetime
+import toxic
 # Функция для отправки сообщения
 
 
@@ -34,7 +35,7 @@ def send_message(user_id, message, keyboard=None, template=None):
 
 # Функция для создания клавиатуры
 def create_keyboard():
-    keyboard = VkKeyboard(one_time=True)
+    keyboard = VkKeyboard(one_time=False)
     keyboard.add_button('Ответы на частые вопросы', color=VkKeyboardColor.SECONDARY)
     keyboard.add_line()
     keyboard.add_button('Задать вопрос', color=VkKeyboardColor.PRIMARY)
@@ -91,24 +92,28 @@ for event in longpoll.listen():
                         break
             received()
 
-        elif message == 'задать вопрос':
-
+        elif message == 'Задать вопрос':
             current_date = datetime.datetime.now().strftime('%Y-%m-%d')
             send_message(user_id, 'Задайте вопрос в свободной форме', keyboard)
             for event in longpoll.listen():
                 if event.type == VkEventType.MESSAGE_NEW and event.to_me:
-                    id = event.user_id
-                    user_get = vk.users.get(user_ids=(id))
-                    user_get = user_get[0]
-                    first_name = user_get['first_name']  # Имя пользователя
-                    last_name = user_get['last_name']  # Фамилия
-                    full_name = str(first_name+last_name)
-                    send_message(user_id, 'Спасибо за вопрос! Идет обработка сообщения........️', keyboard)
                     request = event.text
-                    cursor.execute(f'''INSERT INTO History (username,date,message) VALUES ("{full_name}","{current_date}","{request}" )''')
-                    connection.commit()
-                    send_message(user_id, f'Ваш запрос относится к теме: {GigResponse(request)}', keyboard)
-                    break
+                    if not(toxic.toxic(request)=="negative"or"skip"):
+                        print(toxic.toxic(request))
+                        id = event.user_id
+                        user_get = vk.users.get(user_ids=(id))
+                        user_get = user_get[0]
+                        first_name = user_get['first_name']  # Имя пользователя
+                        last_name = user_get['last_name']  # Фамилия
+                        full_name = str(first_name+last_name)
+                        send_message(user_id, 'Спасибо за вопрос! Идет обработка сообщения........️', keyboard)
+                        cursor.execute(f'''INSERT INTO History (username,date,message) VALUES ("{full_name}","{current_date}","{request}" )''')
+                        connection.commit()
+                        send_message(user_id, f'Ваш запрос относится к теме: 👉{GigResponse(request)}👈', keyboard)
+                        break
+                    else:
+                        send_message(user_id, 'Я не могу обработать данный запрос \nПрисутсвуют некорректные слова!.', keyboard)
+                        break
         #Для частых вопросов
         elif message == 'о жилищных программах':
             send_message(user_id, question(), keyboard)
