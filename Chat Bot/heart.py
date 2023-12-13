@@ -10,9 +10,19 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from topics import  GigResponse
-
-
+import sqlite3
+import datetime
 # Функция для отправки сообщения
+
+
+
+connection = sqlite3.connect('history.db')
+
+cursor = connection.cursor()
+cursor.execute('''CREATE TABLE IF NOT EXISTS History (id INTEGER PRIMARY KEY AUTOINCREMENT,username TEXT NOT NULL, date TEXT NOT NULL, message TEXT NOT NULL)''')
+
+connection.commit()
+
 def send_message(user_id, message, keyboard=None, template=None):
     vk.messages.send(
         user_id=user_id,
@@ -83,11 +93,21 @@ for event in longpoll.listen():
             received()
 
         elif message == 'задать вопрос':
+
+            current_date = datetime.datetime.now().strftime('%Y-%m-%d')
             send_message(user_id, 'Задайте вопрос в свободной форме', keyboard)
             for event in longpoll.listen():
                 if event.type == VkEventType.MESSAGE_NEW and event.to_me:
+                    id = event.user_id
+                    user_get = vk.users.get(user_ids=(id))
+                    user_get = user_get[0]
+                    first_name = user_get['first_name']  # Имя пользователя
+                    last_name = user_get['last_name']  # Фамилия
+                    full_name = str(first_name+last_name)
                     send_message(user_id, 'Спасибо за вопрос! Идет обработка сообщения........️', keyboard)
                     request = event.text
+                    cursor.execute(f'''INSERT INTO History (username,date,message) VALUES ("{full_name}","{current_date}","{request}" )''')
+                    connection.commit()
                     send_message(user_id, f'Ваш запрос относится к теме: {GigResponse(request)}', keyboard)
                     break
 
