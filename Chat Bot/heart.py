@@ -2,10 +2,14 @@
 import vk_api
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.longpoll import VkLongPoll, VkEventType
-from config import VK_API
+from config import VK_API, PASSWORD
 import json
 from faq import question, question2
 from carousel import create_keyboard_two
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 
 # Функция для отправки сообщения
 def send_message(user_id, message, keyboard=None, template=None):
@@ -49,15 +53,32 @@ for event in longpoll.listen():
             send_message(user_id, "Вы выбрали Ответы на вопросы", template=keyboard2)
 
         elif message == 'сообщить о проблеме':
-            send_message(user_id, 'Вы выбрали "Сообщить о проблеме"', keyboard)
+            send_message(user_id, 'Вы выбрали "Сообщить о проблеме"')
             send_message(user_id, 'Запишите вашу проблему')
             def received():
                 for event in longpoll.listen():
                     if event.type == VkEventType.MESSAGE_NEW and event.to_me:
                         received_message = event.text  # Текст сообщения записывается в строку
                         user_id = event.user_id
+                        smtp_server = "smtp.yandex.ru"  # Для Gmail. Используйте соответствующий адрес для других провайдеров.
+                        smtp_port = 587  # Порт для TLS
+                        username = "tchernenkocon@yandex.ru"
+                        password = PASSWORD
+                        recipient = "lokrit9@gmail.com"
+                        message = MIMEMultipart()
+                        message["From"] = username
+                        message["To"] = recipient
+                        message["Subject"] = "Обращение"
+                        body = received_message
+                        message.attach(MIMEText(body, "plain"))
+                        server = smtplib.SMTP(smtp_server, smtp_port)
+                        server.starttls()  # Начать шифрованное соединение
+                        server.login(username, password)
+                        server.send_message(message)
+                        server.quit()
+                        send_message(user_id, 'Успешно отправлено', keyboard)
+                        break
             received()
-
 
         elif message == 'задать вопрос':
             send_message(user_id, 'Вы выбрали "Задать вопрос"', keyboard)
