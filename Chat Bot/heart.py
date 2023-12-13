@@ -34,13 +34,12 @@ def send_message(user_id, message, keyboard=None, template=None):
 
 # Функция для создания клавиатуры
 def create_keyboard():
-    keyboard = VkKeyboard(one_time=False)
-
-    keyboard.add_button('Ответы на вопросы', color=VkKeyboardColor.PRIMARY)
+    keyboard = VkKeyboard(one_time=True)
+    keyboard.add_button('Ответы на частые вопросы', color=VkKeyboardColor.SECONDARY)
+    keyboard.add_line()
+    keyboard.add_button('Задать вопрос', color=VkKeyboardColor.PRIMARY)
     keyboard.add_line()
     keyboard.add_button('Сообщить о проблеме', color=VkKeyboardColor.NEGATIVE)
-    keyboard.add_line()
-    keyboard.add_button('Задать вопрос', color=VkKeyboardColor.POSITIVE)
 
     return keyboard.get_keyboard()
 
@@ -110,10 +109,6 @@ for event in longpoll.listen():
                     connection.commit()
                     send_message(user_id, f'Ваш запрос относится к теме: {GigResponse(request)}', keyboard)
                     break
-
-
-
-
         #Для частых вопросов
         elif message == 'о жилищных программах':
             send_message(user_id, question(), keyboard)
