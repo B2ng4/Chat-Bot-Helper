@@ -36,11 +36,13 @@ def send_message(user_id, message, keyboard=None, template=None):
 # Функция для создания клавиатуры
 def create_keyboard():
     keyboard = VkKeyboard(one_time=False)
-    keyboard.add_button('Ответы на частые вопросы', color=VkKeyboardColor.SECONDARY)
+    keyboard.add_button('Ответы на частые вопросы ❓', color=VkKeyboardColor.SECONDARY)
     keyboard.add_line()
-    keyboard.add_button('Задать вопрос', color=VkKeyboardColor.PRIMARY)
+    keyboard.add_button('Задать вопрос 📝', color=VkKeyboardColor.PRIMARY)
     keyboard.add_line()
-    keyboard.add_button('Сообщить о проблеме', color=VkKeyboardColor.NEGATIVE)
+    keyboard.add_button('Сообщить о проблеме 🆘', color=VkKeyboardColor.NEGATIVE)
+    keyboard.add_line()
+    keyboard.add_button('История обращений 🕖', color=VkKeyboardColor.SECONDARY)
 
     return keyboard.get_keyboard()
 
@@ -61,10 +63,10 @@ for event in longpoll.listen():
             welcome_message = 'Здравствуйте! Я умный цифровой помощник главы города Мирный. Что Вас интересует?'
             send_message(user_id, welcome_message, keyboard)
 
-        elif message == "ответы на частые вопросы":
+        elif message == "ответы на частые вопросы ❓":
             send_message(user_id, "Вы выбрали Ответы на вопросы", template=keyboard2)
 
-        elif message == 'сообщить о проблеме':
+        elif message == 'сообщить о проблеме 🆘':
             send_message(user_id, 'Вы выбрали "Сообщить о проблеме"')
             send_message(user_id, 'Запишите вашу проблему')
             def received():
@@ -92,7 +94,7 @@ for event in longpoll.listen():
                         break
             received()
 
-        elif message == 'задать вопрос':
+        elif message == 'задать вопрос 📝':
             current_date = datetime.datetime.now().strftime('%Y-%m-%d')
             send_message(user_id, 'Задайте вопрос в свободной форме', keyboard)
             for event in longpoll.listen():
@@ -105,7 +107,7 @@ for event in longpoll.listen():
                         first_name = user_get['first_name']  # Имя пользователя
                         last_name = user_get['last_name']  # Фамилия
                         full_name = str(first_name+last_name)
-                        send_message(user_id, 'Спасибо за вопрос! Идет обработка сообщения........️', keyboard)
+                        send_message(user_id, 'Спасибо за вопрос! Идет обработка сообщения ♾️♾️♾️.️', keyboard)
                         cursor.execute(f'''INSERT INTO History (username,date,message) VALUES ("{full_name}","{current_date}","{request}" )''')
                         connection.commit()
                         send_message(user_id, f'Ваш запрос относится к теме: 👉{GigResponse(request)}👈', keyboard)
