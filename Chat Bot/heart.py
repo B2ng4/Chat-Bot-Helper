@@ -46,15 +46,23 @@ for event in longpoll.listen():
             send_message(user_id, welcome_message, keyboard)
 
         elif message == "ответы на вопросы":
-            # Пример отправки карусели
             send_message(user_id, "Вы выбрали Ответы на вопросы", template=keyboard2)
 
         elif message == 'сообщить о проблеме':
             send_message(user_id, 'Вы выбрали "Сообщить о проблеме"', keyboard)
+            send_message(user_id, 'Запишите вашу проблему')
+            def received():
+                for event in longpoll.listen():
+                    if event.type == VkEventType.MESSAGE_NEW and event.to_me:
+                        received_message = event.text  # Текст сообщения записывается в строку
+                        user_id = event.user_id
+            received()
+
 
         elif message == 'задать вопрос':
             send_message(user_id, 'Вы выбрали "Задать вопрос"', keyboard)
 
+        #Для частых вопросов
         elif message == 'о жилищных программах':
             send_message(user_id, question(), keyboard)
 
