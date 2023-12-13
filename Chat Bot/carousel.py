@@ -17,13 +17,13 @@ def create_keyboard_two():
     })
 
     carousel_elements.append({
-        "title": "Заголовок 2",
-        "description": "Описание 2",
+        "title": "О выделении земельных участков",
+        "description": "Выделение земельных участков многодетным семьям по Закону РС(Я).",
         "buttons": [
             {
                 "action": {
                     "type": "text",
-                    "label": "Кнопка 2",
+                    "label": "О выделении земельных участков",
                     "payload": json.dumps({"button": "2"})
                 }
             }

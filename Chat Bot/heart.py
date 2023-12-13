@@ -4,7 +4,7 @@ from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.longpoll import VkLongPoll, VkEventType
 from config import VK_API
 import json
-from faq import question
+from faq import question, question2
 from carousel import create_keyboard_two
 
 # Функция для отправки сообщения
@@ -57,6 +57,9 @@ for event in longpoll.listen():
 
         elif message == 'о жилищных программах':
             send_message(user_id, question(), keyboard)
+
+        elif message == 'о выделении земельных участков':
+            send_message(user_id, question2(), keyboard)
 
         else:
             send_message(user_id, 'Извините, я не понимаю ваш запрос. Пожалуйста, воспользуйтесь клавиатурой.', keyboard)
