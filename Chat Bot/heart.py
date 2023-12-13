@@ -98,8 +98,7 @@ for event in longpoll.listen():
             for event in longpoll.listen():
                 if event.type == VkEventType.MESSAGE_NEW and event.to_me:
                     request = event.text
-                    if not(toxic.toxic(request)=="negative"or"skip"):
-                        print(toxic.toxic(request))
+                    if not(toxic.toxi(request)=="negative"):
                         id = event.user_id
                         user_get = vk.users.get(user_ids=(id))
                         user_get = user_get[0]
@@ -112,7 +111,7 @@ for event in longpoll.listen():
                         send_message(user_id, f'Ваш запрос относится к теме: 👉{GigResponse(request)}👈', keyboard)
                         break
                     else:
-                        send_message(user_id, 'Я не могу обработать данный запрос \nПрисутсвуют некорректные слова!.', keyboard)
+                        send_message(user_id, '❗️❗️Я не могу обработать данный запрос\nПрисутсвуют некорректные слова❗️❗️️', keyboard)
                         break
         #Для частых вопросов
         elif message == 'о жилищных программах':

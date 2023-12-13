@@ -1,10 +1,13 @@
+
+
 from dostoevsky.tokenization import RegexTokenizer
 from dostoevsky.models import FastTextSocialNetworkModel
 
-tokenizer = RegexTokenizer()
-model = FastTextSocialNetworkModel(tokenizer=tokenizer)
-def toxic(message):
-    return list(model.predict(message, k=1)[0].keys())[0]
 
-
-
+def toxi(message):
+    tokenizer = RegexTokenizer()
+    model = FastTextSocialNetworkModel(tokenizer=tokenizer)
+    message = message
+    results = model.predict(message, k = 2)[0]
+    max_key = max(results, key=results.get)
+    return str(max_key)
