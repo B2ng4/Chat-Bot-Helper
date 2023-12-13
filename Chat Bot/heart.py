@@ -9,6 +9,7 @@ from carousel import create_keyboard_two
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from topics import  GigResponse
 
 
 # Функция для отправки сообщения
@@ -23,11 +24,12 @@ def send_message(user_id, message, keyboard=None, template=None):
 
 # Функция для создания клавиатуры
 def create_keyboard():
-    keyboard = VkKeyboard(one_time=True)
+    keyboard = VkKeyboard(one_time=False)
 
     keyboard.add_button('Ответы на вопросы', color=VkKeyboardColor.PRIMARY)
     keyboard.add_line()
     keyboard.add_button('Сообщить о проблеме', color=VkKeyboardColor.NEGATIVE)
+    keyboard.add_line()
     keyboard.add_button('Задать вопрос', color=VkKeyboardColor.POSITIVE)
 
     return keyboard.get_keyboard()
@@ -64,7 +66,7 @@ for event in longpoll.listen():
                         smtp_port = 587  # Порт для TLS
                         username = "tchernenkocon@yandex.ru"
                         password = PASSWORD
-                        recipient = "lokrit9@gmail.com"
+                        recipient = "timsidorin@gmail.com"
                         message = MIMEMultipart()
                         message["From"] = username
                         message["To"] = recipient
@@ -81,7 +83,16 @@ for event in longpoll.listen():
             received()
 
         elif message == 'задать вопрос':
-            send_message(user_id, 'Вы выбрали "Задать вопрос"', keyboard)
+            send_message(user_id, 'Задайте вопрос в свободной форме', keyboard)
+            for event in longpoll.listen():
+                if event.type == VkEventType.MESSAGE_NEW and event.to_me:
+                    send_message(user_id, 'Спасибо за вопрос! Идет обработка сообщения........️', keyboard)
+                    request = event.text
+                    send_message(user_id, f'Ваш запрос относится к теме: {GigResponse(request)}', keyboard)
+                    break
+
+
+
 
         #Для частых вопросов
         elif message == 'о жилищных программах':
