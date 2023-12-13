@@ -60,7 +60,7 @@ for event in longpoll.listen():
             welcome_message = 'Здравствуйте! Я умный цифровой помощник главы города Мирный. Что Вас интересует?'
             send_message(user_id, welcome_message, keyboard)
 
-        elif message == "ответы на вопросы":
+        elif message == "ответы на частые вопросы":
             send_message(user_id, "Вы выбрали Ответы на вопросы", template=keyboard2)
 
         elif message == 'сообщить о проблеме':
