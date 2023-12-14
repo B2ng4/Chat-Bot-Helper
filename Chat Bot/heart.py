@@ -4,7 +4,7 @@ from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.longpoll import VkLongPoll, VkEventType
 from config import VK_API, PASSWORD
 import json
-from faq import *
+from faq import question, question2
 from carousel import create_keyboard_two
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -13,10 +13,8 @@ from topics import  GigResponse
 import sqlite3
 import datetime
 import toxic
-from urllib.request import urlretrieve
-from email.mime.image import MIMEImage
-import requests
-
+# Функция для отправки сообщения
+from NLP import bert_semantic_similarity as nlp
 
 
 connection = sqlite3.connect('history.db')
@@ -26,7 +24,6 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS History (id INTEGER PRIMARY KEY AUT
 
 connection.commit()
 
-# Функция для отправки сообщения
 def send_message(user_id, message, keyboard=None, template=None):
     vk.messages.send(
         user_id=user_id,
@@ -71,7 +68,7 @@ for event in longpoll.listen():
 
         elif message == 'сообщить о проблеме 🆘':
             send_message(user_id, 'Вы выбрали "Сообщить о проблеме"')
-            send_message(user_id, 'Запишите вашу проблему, также приложите фотоснимок(если он есть)')
+            send_message(user_id, 'Запишите вашу проблему')
             def received():
                 for event in longpoll.listen():
                     if event.type == VkEventType.MESSAGE_NEW and event.to_me:
@@ -81,44 +78,17 @@ for event in longpoll.listen():
                         smtp_port = 587  # Порт для TLS
                         username = "tchernenkocon@yandex.ru"
                         password = PASSWORD
-                        recipient = "lokrit9@gmail.com"
-                        email_message = MIMEMultipart()
-                        email_message["From"] = username
-                        email_message["To"] = recipient
-                        email_message["Subject"] = "Обращение"
+                        recipient = "timsidorin@gmail.com"
+                        message = MIMEMultipart()
+                        message["From"] = username
+                        message["To"] = recipient
+                        message["Subject"] = "Обращение"
                         body = received_message
-                        email_message.attach(MIMEText(body, "plain"))
-
-                        messages = vk.messages.getHistory(count=5, user_id=user_id)['items']
-                        # Поиск изображений в сообщениях
-                        for message in messages:
-                            if 'attachments' in message:
-                                for attachment in message['attachments']:
-                                    if attachment['type'] == 'photo':
-                                        # Получение URL самой большой версии изображения
-                                        photo_url = max(attachment['photo']['sizes'], key=lambda size: size['height'])[
-                                            'url']
-                                        # Скачивание изображения
-                                        urlretrieve(photo_url, "pict/downloaded_image.jpg")
-                                        print("Изображение скачано")
-                                        break
-
-                        for msg in messages:
-                            if 'attachments' in msg:
-                                for attachment in msg['attachments']:
-                                    if attachment['type'] == 'photo':
-                                        photo_url = max(attachment['photo']['sizes'], key=lambda size: size['height'])[
-                                            'url']
-                                        response = requests.get(photo_url)
-                                        img = MIMEImage(response.content)
-                                        email_message.attach(img)
-                                        print("Изображение прикреплено к письму")
-                                        break
-
+                        message.attach(MIMEText(body, "plain"))
                         server = smtplib.SMTP(smtp_server, smtp_port)
-                        server.starttls()
+                        server.starttls()  # Начать шифрованное соединение
                         server.login(username, password)
-                        server.send_message(email_message)
+                        server.send_message(message)
                         server.quit()
                         send_message(user_id, 'Успешно отправлено', keyboard)
                         break
@@ -140,36 +110,19 @@ for event in longpoll.listen():
                         send_message(user_id, 'Спасибо за вопрос! Идет обработка сообщения ♾️♾️♾️.️', keyboard)
                         cursor.execute(f'''INSERT INTO History (username,date,message) VALUES ("{full_name}","{current_date}","{request}" )''')
                         connection.commit()
-                        send_message(user_id, f'Ваш запрос относится к теме: 👉{GigResponse(request)}👈', keyboard)
+                        link = nlp(event.text)
+                        send_message(user_id, f'Ваш запрос относится к теме: 👉{GigResponse(request)}👈\n', keyboard)
+                        send_message(user_id, f'👉{link}👈 \n По данной ссылке расположен документ, который может вам помочь!', keyboard)
                         break
                     else:
                         send_message(user_id, '❗️❗️Я не могу обработать данный запрос\nПрисутсвуют некорректные слова❗️❗️️', keyboard)
                         break
-
-        #Для частых вопросовО правильности начислений ЖКХ
+        #Для частых вопросов
         elif message == 'о жилищных программах':
             send_message(user_id, question(), keyboard)
 
         elif message == 'о выделении земельных участков':
             send_message(user_id, question2(), keyboard)
-
-        elif message == 'о правильности начислений жкх':
-            send_message(user_id, question3(), keyboard)
-
-        elif message == 'способы управления многоквартирным домом':
-            send_message(user_id, question4(), keyboard)
-
-        elif message == 'получение земельных участков':
-            send_message(user_id, question5(), keyboard)
-
-        elif message == 'помощь безработным':
-            send_message(user_id, question6(), keyboard)
-
-        elif message == 'помощь':
-            send_message(user_id, question7(), keyboard)
-
-        elif message == 'плата за капитальный ремонт':
-            send_message(user_id, question8(), keyboard)
 
         else:
             send_message(user_id, 'Извините, я не понимаю ваш запрос. Пожалуйста, воспользуйтесь клавиатурой.', keyboard)
