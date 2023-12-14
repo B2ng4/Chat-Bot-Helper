@@ -71,7 +71,7 @@ for event in longpoll.listen():
 
         elif message == 'сообщить о проблеме 🆘':
             send_message(user_id, 'Вы выбрали "Сообщить о проблеме"')
-            send_message(user_id, 'Запишите вашу проблему')
+            send_message(user_id, 'Запишите вашу проблему, также приложите фотоснимок(если он есть)')
             def received():
                 for event in longpoll.listen():
                     if event.type == VkEventType.MESSAGE_NEW and event.to_me:
