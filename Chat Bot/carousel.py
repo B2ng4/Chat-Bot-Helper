@@ -31,14 +31,84 @@ def create_keyboard_two():
     })
 
     carousel_elements.append({
-        "title": "Заголовок 3",
-        "description": "Описание 3",
+        "title": "О правильности начислений ЖКХ",
+        "description": "В счетах довольно часто обнаруживаются ошибки.",
         "buttons": [
             {
                 "action": {
                     "type": "text",
-                    "label": "Кнопка 3",
+                    "label": "О правильности начислений ЖКХ",
                     "payload": json.dumps({"button": "3"})
+                }
+            }
+        ]
+    })
+
+    carousel_elements.append({
+        "title": "Способы управления многоквартирным домом.",
+        "description": "Какие способы управления многоквартирным домом",
+        "buttons": [
+            {
+                "action": {
+                    "type": "text",
+                    "label": "Способы управления многоквартирным домом",
+                    "payload": json.dumps({"button": "4"})
+                }
+            }
+        ]
+    })
+
+    carousel_elements.append({
+        "title": "Получение земельных участков",
+        "description": "Граждане, которые могут получить землю?",
+        "buttons": [
+            {
+                "action": {
+                    "type": "text",
+                    "label": "Получение земельных участков",
+                    "payload": json.dumps({"button": "5"})
+                }
+            }
+        ]
+    })
+
+    carousel_elements.append({
+        "title": "Помощь безработным",
+        "description": "Какая существует помощь?",
+        "buttons": [
+            {
+                "action": {
+                    "type": "text",
+                    "label": "Помощь безработным",
+                    "payload": json.dumps({"button": "5"})
+                }
+            }
+        ]
+    })
+
+    carousel_elements.append({
+        "title": "Помощь",
+        "description": "Помощь лицам оказавшимся в трудной ситуации",
+        "buttons": [
+            {
+                "action": {
+                    "type": "text",
+                    "label": "Помощь",
+                    "payload": json.dumps({"button": "5"})
+                }
+            }
+        ]
+    })
+
+    carousel_elements.append({
+        "title": "Плата за капитальный ремонт",
+        "description": "Для собственников",
+        "buttons": [
+            {
+                "action": {
+                    "type": "text",
+                    "label": "Плата за капитальный ремонт",
+                    "payload": json.dumps({"button": "5"})
                 }
             }
         ]

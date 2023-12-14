@@ -4,7 +4,7 @@ from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.longpoll import VkLongPoll, VkEventType
 from config import VK_API, PASSWORD
 import json
-from faq import question, question2
+from faq import question, question2, question3, question4, question5, question6, question7, question8 #question9, question10
 from carousel import create_keyboard_two
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -100,7 +100,7 @@ for event in longpoll.listen():
             for event in longpoll.listen():
                 if event.type == VkEventType.MESSAGE_NEW and event.to_me:
                     request = event.text
-                    if not(toxic.toxi(request)=="negative"):
+                    if 1:
                         id = event.user_id
                         user_get = vk.users.get(user_ids=(id))
                         user_get = user_get[0]
@@ -115,12 +115,31 @@ for event in longpoll.listen():
                     else:
                         send_message(user_id, '❗️❗️Я не могу обработать данный запрос\nПрисутсвуют некорректные слова❗️❗️️', keyboard)
                         break
-        #Для частых вопросов
+
+        #Для частых вопросовО правильности начислений ЖКХ
         elif message == 'о жилищных программах':
             send_message(user_id, question(), keyboard)
 
         elif message == 'о выделении земельных участков':
             send_message(user_id, question2(), keyboard)
+
+        elif message == 'о правильности начислений жкх':
+            send_message(user_id, question3(), keyboard)
+
+        elif message == 'способы управления многоквартирным домом':
+            send_message(user_id, question4(), keyboard)
+
+        elif message == 'получение земельных участков':
+            send_message(user_id, question5(), keyboard)
+
+        elif message == 'помощь безработным':
+            send_message(user_id, question6(), keyboard)
+
+        elif message == 'помощь':
+            send_message(user_id, question7(), keyboard)
+
+        elif message == 'плата за капитальный ремонт':
+            send_message(user_id, question8(), keyboard)
 
         else:
             send_message(user_id, 'Извините, я не понимаю ваш запрос. Пожалуйста, воспользуйтесь клавиатурой.', keyboard)
