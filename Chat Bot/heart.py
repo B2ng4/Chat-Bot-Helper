@@ -4,7 +4,7 @@ from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.longpoll import VkLongPoll, VkEventType
 from config import VK_API, PASSWORD
 import json
-from faq import question, question2, question3, question4, question5, question6, question7, question8 #question9, question10
+from faq import question, question2, question3, question4, question5, question6, question7, question8
 from carousel import create_keyboard_two
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -16,7 +16,6 @@ import toxic
 from urllib.request import urlretrieve
 from email.mime.image import MIMEImage
 import requests
-# Функция для отправки сообщения
 
 
 
@@ -27,6 +26,7 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS History (id INTEGER PRIMARY KEY AUT
 
 connection.commit()
 
+# Функция для отправки сообщения
 def send_message(user_id, message, keyboard=None, template=None):
     vk.messages.send(
         user_id=user_id,
