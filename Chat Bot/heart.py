@@ -4,7 +4,7 @@ from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.longpoll import VkLongPoll, VkEventType
 from config import VK_API, PASSWORD
 import json
-from faq import question, question2, question3, question4, question5, question6, question7, question8
+from faq import *
 from carousel import create_keyboard_two
 import smtplib
 from email.mime.multipart import MIMEMultipart
