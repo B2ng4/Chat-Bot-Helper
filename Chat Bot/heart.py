@@ -13,6 +13,9 @@ from topics import  GigResponse
 import sqlite3
 import datetime
 import toxic
+from urllib.request import urlretrieve
+from email.mime.image import MIMEImage
+import requests
 # Функция для отправки сообщения
 
 
@@ -78,17 +81,44 @@ for event in longpoll.listen():
                         smtp_port = 587  # Порт для TLS
                         username = "tchernenkocon@yandex.ru"
                         password = PASSWORD
-                        recipient = "timsidorin@gmail.com"
-                        message = MIMEMultipart()
-                        message["From"] = username
-                        message["To"] = recipient
-                        message["Subject"] = "Обращение"
+                        recipient = "lokrit9@gmail.com"
+                        email_message = MIMEMultipart()
+                        email_message["From"] = username
+                        email_message["To"] = recipient
+                        email_message["Subject"] = "Обращение"
                         body = received_message
-                        message.attach(MIMEText(body, "plain"))
+                        email_message.attach(MIMEText(body, "plain"))
+
+                        messages = vk.messages.getHistory(count=5, user_id=user_id)['items']
+                        # Поиск изображений в сообщениях
+                        for message in messages:
+                            if 'attachments' in message:
+                                for attachment in message['attachments']:
+                                    if attachment['type'] == 'photo':
+                                        # Получение URL самой большой версии изображения
+                                        photo_url = max(attachment['photo']['sizes'], key=lambda size: size['height'])[
+                                            'url']
+                                        # Скачивание изображения
+                                        urlretrieve(photo_url, "pict/downloaded_image.jpg")
+                                        print("Изображение скачано")
+                                        break
+
+                        for msg in messages:
+                            if 'attachments' in msg:
+                                for attachment in msg['attachments']:
+                                    if attachment['type'] == 'photo':
+                                        photo_url = max(attachment['photo']['sizes'], key=lambda size: size['height'])[
+                                            'url']
+                                        response = requests.get(photo_url)
+                                        img = MIMEImage(response.content)
+                                        email_message.attach(img)
+                                        print("Изображение прикреплено к письму")
+                                        break
+
                         server = smtplib.SMTP(smtp_server, smtp_port)
-                        server.starttls()  # Начать шифрованное соединение
+                        server.starttls()
                         server.login(username, password)
-                        server.send_message(message)
+                        server.send_message(email_message)
                         server.quit()
                         send_message(user_id, 'Успешно отправлено', keyboard)
                         break
