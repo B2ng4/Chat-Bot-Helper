@@ -15,7 +15,7 @@ import datetime
 import toxic
 # Функция для отправки сообщения
 from NLP import bert_semantic_similarity as nlp
-
+import shortanswer
 
 connection = sqlite3.connect('history.db')
 
@@ -112,6 +112,8 @@ for event in longpoll.listen():
                         connection.commit()
                         link = nlp(event.text)
                         send_message(user_id, f'Ваш запрос относится к теме: 👉{GigResponse(request)}👈\n', keyboard)
+                        short_ans = shortanswer.short_answer(event.text)
+                        send_message(user_id, f"🕐 Краткий ответ:\n {short_ans}" , keyboard)
                         send_message(user_id, f'👉{link}👈 \n По данной ссылке расположен документ, который может вам помочь!', keyboard)
                         break
                     else:
