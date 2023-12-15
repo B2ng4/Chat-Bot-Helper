@@ -4,7 +4,7 @@ from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.longpoll import VkLongPoll, VkEventType
 from config import VK_API, PASSWORD
 import json
-from faq import question, question2
+from faq import *
 from carousel import create_keyboard_two
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -12,13 +12,13 @@ from email.mime.text import MIMEText
 from topics import  GigResponse
 import sqlite3
 import datetime
-import toxic
+from better_profanity import profanity
 from urllib.request import urlretrieve
 from email.mime.image import MIMEImage
 import requests
-# Функция для отправки сообщения
 from NLP import bert_semantic_similarity as nlp
 import shortanswer
+from toxic import insult
 
 connection = sqlite3.connect('history.db')
 
@@ -147,23 +147,28 @@ for event in longpoll.listen():
                         request = event.text
                         if 1:
                             id = event.user_id
-                            user_get = vk.users.get(user_ids=(id))
-                            user_get = user_get[0]
-                            first_name = user_get['first_name']  # Имя пользователя
-                            last_name = user_get['last_name']  # Фамилия
-                            full_name = str(first_name+last_name)
-                            send_message(user_id, 'Спасибо за вопрос! Идет обработка сообщения ♾️♾️♾️.️', keyboard)
-                            cursor.execute(f'''INSERT INTO History (username,date,message) VALUES ("{full_name}","{current_date}","{request}" )''')
-                            connection.commit()
-                            link = nlp(event.text)
-                            send_message(user_id, f'Ваш запрос относится к теме: 👉{GigResponse(request)}👈\n', keyboard)
-                            short_ans = shortanswer.short_answer(event.text)
-                            send_message(user_id, f"🕐 Краткий ответ:\n {short_ans}" , keyboard)
-                            send_message(user_id, f'👉{link}👈 \n По данной ссылке расположен документ, который может вам помочь!', keyboard)
-                            break
-                        else:
-                            send_message(user_id, '❗️❗️Я не могу обработать данный запрос\nПрисутсвуют некорректные слова❗️❗️️', keyboard)
-                            break
+                            insult()
+                            if profanity.contains_profanity(request):  # Проверка на наличие нецензурных слов
+                                    send_message(user_id,'❗️❗️Я не могу обработать данный запрос\nПрисутсвуют некорректные слова❗️❗️️',keyboard)
+                                    break
+                            else:
+                                user_get = vk.users.get(user_ids=(id))
+                                user_get = user_get[0]
+                                first_name = user_get['first_name']  # Имя пользователя
+                                last_name = user_get['last_name']  # Фамилия
+                                full_name = str(first_name+last_name)
+                                send_message(user_id, 'Спасибо за вопрос! Идет обработка сообщения ♾️♾️♾️.️', keyboard)
+                                cursor.execute(f'''INSERT INTO History (username,date,message) VALUES ("{full_name}","{current_date}","{request}" )''')
+                                connection.commit()
+                                link = nlp(event.text)
+                                send_message(user_id, f'Ваш запрос относится к теме: 👉{GigResponse(request)}👈\n', keyboard)
+                                short_ans = shortanswer.short_answer(event.text)
+                                send_message(user_id, f"🕐 Краткий ответ:\n {short_ans}" , keyboard)
+                                send_message(user_id, f'👉{link}👈 \n По данной ссылке расположен документ, который может вам помочь!', keyboard)
+                                break
+                        # else:
+                        #     send_message(user_id, '❗️❗️Я не могу обработать данный запрос\nПрисутсвуют некорректные слова❗️❗️️', keyboard)
+                        #     break
 
 
 

@@ -1,13 +1,7 @@
-#
-# Использовать другую либу
-# from dostoevsky.tokenization import RegexTokenizer
-# from dostoevsky.models import FastTextSocialNetworkModel
-#
-#
-# def toxi(message):
-#     tokenizer = RegexTokenizer()
-#     model = FastTextSocialNetworkModel(tokenizer=tokenizer)
-#     message = message
-#     results = model.predict(message, k = 2)[0]
-#     max_key = max(results, key=results.get)
-#     return str(max_key)
+
+from better_profanity import profanity
+
+def insult():
+    custom_bad_words = ["дурак", "badword2", "badword3"]
+    profanity.load_censor_words(custom_bad_words)
+    return profanity.load_censor_words(custom_bad_words)
