@@ -1,6 +1,5 @@
 from transformers import AutoModel, AutoTokenizer
 import torch
-import numpy as np
 from scipy.spatial.distance import cosine
 
 # Initialize model and tokenizer once

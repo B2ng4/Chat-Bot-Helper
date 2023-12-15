@@ -1,6 +1,5 @@
 
 import vk_api
-from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.longpoll import VkLongPoll, VkEventType
 from config import VK_API, PASSWORD
 import json
@@ -9,7 +8,7 @@ from carousel import create_keyboard_two
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from topics import  GigResponse
+from topics import GigResponse
 import sqlite3
 import datetime
 from better_profanity import profanity
@@ -19,12 +18,11 @@ import requests
 from NLP import bert_semantic_similarity as nlp
 import shortanswer
 from toxic import insult
+from buttons import create_keyboard, back
 
 connection = sqlite3.connect('history.db')
-
 cursor = connection.cursor()
 cursor.execute('''CREATE TABLE IF NOT EXISTS History (id INTEGER PRIMARY KEY AUTOINCREMENT,username TEXT NOT NULL, date TEXT NOT NULL, message TEXT NOT NULL)''')
-
 connection.commit()
 
 def send_message(user_id, message, keyboard=None, template=None):
@@ -35,25 +33,6 @@ def send_message(user_id, message, keyboard=None, template=None):
         keyboard=keyboard,
         template=json.dumps(template) if template is not None else None
     )
-
-# Функция для создания клавиатуры
-def create_keyboard():
-    keyboard = VkKeyboard(one_time=False)
-    keyboard.add_button('Ответы на частые вопросы ❓', color=VkKeyboardColor.SECONDARY)
-    keyboard.add_line()
-    keyboard.add_button('Задать вопрос 📝', color=VkKeyboardColor.PRIMARY)
-    keyboard.add_line()
-    keyboard.add_button('Сообщить о проблеме 🆘', color=VkKeyboardColor.NEGATIVE)
-    keyboard.add_line()
-    keyboard.add_button('История обращений 🕖', color=VkKeyboardColor.SECONDARY)
-
-    return keyboard.get_keyboard()
-
-def back():
-    keyboard = VkKeyboard(one_time=False)
-    keyboard.add_button('Назад', color=VkKeyboardColor.NEGATIVE)
-
-    return keyboard.get_keyboard()
 
 # Авторизация бота
 vk_session = vk_api.VkApi(token=VK_API)
@@ -89,15 +68,15 @@ for event in longpoll.listen():
                             send_message(user_id, 'Возврат в главное меню', keyboard)
                             break
                         else:
-                            smtp_server = "smtp.yandex.ru"  # Для Gmail. Используйте соответствующий адрес для других провайдеров.
+                            smtp_server = "smtp.yandex.ru"
                             smtp_port = 587  # Порт для TLS
-                            username = "tchernenkocon@yandex.ru"
+                            username = "tchernenkocon@yandex.ru" #с какой почты отправка
                             password = PASSWORD
-                            recipient = "lokrit9@gmail.com"
+                            recipient = "lokrit9@gmail.com" #конечный адрес
                             email_message = MIMEMultipart()
                             email_message["From"] = username
                             email_message["To"] = recipient
-                            email_message["Subject"] = "Обращение"
+                            email_message["Subject"] = "Сообщение о проблеме"
                             body = received_message
                             email_message.attach(MIMEText(body, "plain"))
                             messages = vk.messages.getHistory(count=5, user_id=user_id)['items']
@@ -165,8 +144,6 @@ for event in longpoll.listen():
                                 short_ans = shortanswer.short_answer(event.text)
                                 send_message(user_id, f"🕐 Краткий ответ:\n {short_ans}")
                                 send_message(user_id, f'👉{link}👈 \n По данной ссылке расположен документ, который может вам помочь!', b_back)
-
-
 
         #Для частых вопросов
         elif message == 'о жилищных программах':

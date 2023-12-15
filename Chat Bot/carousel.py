@@ -60,7 +60,7 @@ def create_keyboard_two():
 
     carousel_elements.append({
         "title": "Получение земельных участков",
-        "description": "Граждане, которые могут получить землю?",
+        "description": "Какие граждане могут получить землю?",
         "buttons": [
             {
                 "action": {
