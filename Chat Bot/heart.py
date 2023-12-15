@@ -137,7 +137,7 @@ for event in longpoll.listen():
         elif message == 'задать вопрос 📝':
             current_date = datetime.datetime.now().strftime('%Y-%m-%d')
             send_message(user_id, 'Задайте вопрос в свободной форме')
-            send_message(user_id, 'Для возврата в главное меню нажмите кнопку "Назад"', b_back)
+            send_message(user_id, 'ㅤ ', b_back)
             for event in longpoll.listen():
                 if event.type == VkEventType.MESSAGE_NEW and event.to_me:
                     if event.text == "Назад":
