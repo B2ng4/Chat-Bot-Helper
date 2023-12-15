@@ -118,7 +118,7 @@ for event in longpoll.listen():
 
         elif message == 'задать вопрос 📝':
             current_date = datetime.datetime.now().strftime('%Y-%m-%d')
-            send_message(user_id, 'Задайте вопрос в свободной форме')
+            send_message(user_id, 'Задайте вопрос в свободной форме 📝')
             send_message(user_id, 'ㅤ ', b_back)
             for event in longpoll.listen():
                 if event.type == VkEventType.MESSAGE_NEW and event.to_me:
@@ -151,7 +151,7 @@ for event in longpoll.listen():
 
         elif message == "история обращений 🕑":
             alls = cursor.execute(f'''SELECT date, message ,response FROM History WHERE id='{user_id}' ''')
-            send_message(user_id, f"Ваша история обращений: \n\n")
+            send_message(user_id, f"В̲а̲ш̲а̲ и̲с̲т̲о̲р̲и̲я̲ о̲б̲р̲а̲щ̲е̲н̲и̲й̲: \n\n")
             all_history = cursor.fetchall()
             for event in all_history:
                 date = event[0]

@@ -16,6 +16,6 @@ def create_keyboard():
 
 def back():
     keyboard = VkKeyboard(one_time=False)
-    keyboard.add_button('Назад', color=VkKeyboardColor.NEGATIVE)
+    keyboard.add_button('Назад', color=VkKeyboardColor.PRIMARY)
 
     return keyboard.get_keyboard()
