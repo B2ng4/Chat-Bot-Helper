@@ -19,11 +19,14 @@ from NLP import bert_semantic_similarity as nlp
 import shortanswer
 from toxic import insult
 from buttons import create_keyboard, back
+from config import host, user, db_pass, db_name, port
+import psycopg2
 
-connection = sqlite3.connect('history.db')
+
+connection = psycopg2.connect(dbname="History", user='root', password=db_pass, host =host, port=port)
+connection.autocommit = True
 cursor = connection.cursor()
-cursor.execute('''CREATE TABLE IF NOT EXISTS History (id INTEGER PRIMARY KEY AUTOINCREMENT,username TEXT NOT NULL, date TEXT NOT NULL, message TEXT NOT NULL)''')
-connection.commit()
+cursor.execute('''CREATE TABLE IF NOT EXISTS History (id INTEGER, username TEXT NOT NULL, date TEXT NOT NULL, message TEXT NOT NULL , response TEXT NOT NULL )''')
 
 def send_message(user_id, message, keyboard=None, template=None):
     vk.messages.send(
@@ -137,13 +140,26 @@ for event in longpoll.listen():
                                 last_name = user_get['last_name']  # Фамилия
                                 full_name = str(first_name+last_name)
                                 send_message(user_id, 'Спасибо за вопрос! Идет обработка сообщения ♾️♾️♾️.️')
-                                cursor.execute(f'''INSERT INTO History (username,date,message) VALUES ("{full_name}","{current_date}","{request}" )''')
-                                connection.commit()
+
                                 link = nlp(event.text)
                                 send_message(user_id, f'Ваш запрос относится к теме: 👉{GigResponse(request)}👈\n')
                                 short_ans = shortanswer.short_answer(event.text)
                                 send_message(user_id, f"🕐 Краткий ответ:\n {short_ans}")
+                                cursor.execute(
+                                    f'''INSERT INTO History (id, username, date, message, response) VALUES ('{user_id}','{full_name}', '{current_date}','{request}','{short_ans}')''')
                                 send_message(user_id, f'👉{link}👈 \n По данной ссылке расположен документ, который может вам помочь!', b_back)
+
+        elif message == "история обращений 🕑":
+            alls = cursor.execute(f'''SELECT date, message ,response FROM History WHERE id='{user_id}' ''')
+            send_message(user_id, f"Ваша история обращений: \n\n")
+            all_history = cursor.fetchall()
+            for event in all_history:
+                date = event[0]
+                request = event[1]
+                response = event[2]
+                send_message(user_id, f'🕑{date}:\n❓Ваш запрос:  {request}\n✏️Ответ:  {response} \n \n ',b_back)
+
+
 
         #Для частых вопросов
         elif message == 'о жилищных программах':
@@ -169,6 +185,8 @@ for event in longpoll.listen():
 
         elif message == 'плата за капитальный ремонт':
             send_message(user_id, question8(), keyboard)
+
+
 
         else:
             send_message(user_id, 'Извините, я не понял ваш запрос. Пожалуйста, воспользуйтесь клавиатурой.', keyboard)

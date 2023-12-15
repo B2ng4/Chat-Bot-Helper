@@ -9,6 +9,8 @@ def create_keyboard():
     keyboard.add_button('Задать вопрос 📝', color=VkKeyboardColor.PRIMARY)
     keyboard.add_line()
     keyboard.add_button('Сообщить о проблеме 🆘', color=VkKeyboardColor.NEGATIVE)
+    keyboard.add_line()
+    keyboard.add_button('История обращений 🕑', color=VkKeyboardColor.SECONDARY)
 
     return keyboard.get_keyboard()
 
