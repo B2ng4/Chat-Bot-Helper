@@ -157,18 +157,14 @@ for event in longpoll.listen():
                                 first_name = user_get['first_name']  # Имя пользователя
                                 last_name = user_get['last_name']  # Фамилия
                                 full_name = str(first_name+last_name)
-                                send_message(user_id, 'Спасибо за вопрос! Идет обработка сообщения ♾️♾️♾️.️', keyboard)
+                                send_message(user_id, 'Спасибо за вопрос! Идет обработка сообщения ♾️♾️♾️.️')
                                 cursor.execute(f'''INSERT INTO History (username,date,message) VALUES ("{full_name}","{current_date}","{request}" )''')
                                 connection.commit()
                                 link = nlp(event.text)
-                                send_message(user_id, f'Ваш запрос относится к теме: 👉{GigResponse(request)}👈\n', keyboard)
+                                send_message(user_id, f'Ваш запрос относится к теме: 👉{GigResponse(request)}👈\n')
                                 short_ans = shortanswer.short_answer(event.text)
-                                send_message(user_id, f"🕐 Краткий ответ:\n {short_ans}" , keyboard)
-                                send_message(user_id, f'👉{link}👈 \n По данной ссылке расположен документ, который может вам помочь!', keyboard)
-                                break
-                        # else:
-                        #     send_message(user_id, '❗️❗️Я не могу обработать данный запрос\nПрисутсвуют некорректные слова❗️❗️️', keyboard)
-                        #     break
+                                send_message(user_id, f"🕐 Краткий ответ:\n {short_ans}")
+                                send_message(user_id, f'👉{link}👈 \n По данной ссылке расположен документ, который может вам помочь!', b_back)
 
 
 
