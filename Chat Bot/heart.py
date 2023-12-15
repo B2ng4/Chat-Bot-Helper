@@ -147,7 +147,7 @@ for event in longpoll.listen():
                         request = event.text
                         if 1:
                             id = event.user_id
-                            insult()
+                            insult(request)
                             if profanity.contains_profanity(request):  # Проверка на наличие нецензурных слов
                                     send_message(user_id,'❗️❗️Я не могу обработать данный запрос\nПрисутсвуют некорректные слова❗️❗️️',keyboard)
                                     break
