@@ -171,4 +171,4 @@ for event in longpoll.listen():
             send_message(user_id, question8(), keyboard)
 
         else:
-            send_message(user_id, 'Извините, я не понимаю ваш запрос. Пожалуйста, воспользуйтесь клавиатурой.', keyboard)
+            send_message(user_id, 'Извините, я не понял ваш запрос. Пожалуйста, воспользуйтесь клавиатурой.', keyboard)
