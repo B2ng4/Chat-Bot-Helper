@@ -140,7 +140,11 @@ for event in longpoll.listen():
                                 full_name = str(first_name+last_name)
                                 send_message(user_id, 'Спасибо за вопрос! Идет обработка сообщения ♾️♾️♾️.️')
                                 gig_rexponse = str(GigResponse(request))
-                                topic = (gig_rexponse.split("Заголовок:"))[1]
+                                split_response = gig_rexponse.split("Заголовок:")
+                                if len(split_response) > 1:
+                                    topic = split_response[1]
+                                else:
+                                    topic = None  # or some default value
                                 link = nlp(event.text)
                                 send_message(user_id, f'Ваш запрос относится к теме: 👉{gig_rexponse}👈\n')
                                 short_ans = shortanswer.short_answer(event.text)
