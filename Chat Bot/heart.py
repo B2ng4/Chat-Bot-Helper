@@ -49,6 +49,12 @@ for event in longpoll.listen():
     if event.type == VkEventType.MESSAGE_NEW and event.to_me:
         user_id = event.user_id
         message = event.text.lower()
+        id = event.user_id
+        user_get = vk.users.get(user_ids=(id))
+        user_get = user_get[0]
+        first_name = user_get['first_name']  # Имя пользователя
+        last_name = user_get['last_name']  # Фамилия
+        full_name = str(first_name + last_name)
 
         if message == 'начать':
             welcome_message = 'Здравствуйте! Я умный цифровой помощник главы города Мирный. Что Вас интересует?'
@@ -66,6 +72,9 @@ for event in longpoll.listen():
                     if event.type == VkEventType.MESSAGE_NEW and event.to_me:
                         received_message = event.text  # Текст сообщения записывается в строку
                         user_id = event.user_id
+                        if profanity.contains_profanity(received_message):  # Проверка на наличие нецензурных слов
+                                send_message(user_id,'❗️❗️Я не могу обработать данный запрос\nПрисутсвуют некорректные слова❗️❗️️',keyboard)
+                                break
                         if event.text == "Назад":
                             send_message(user_id, 'Возврат в главное меню', keyboard)
                             break
