@@ -92,7 +92,6 @@ for event in longpoll.listen():
                                                 'url']
                                             # Скачивание изображения
                                             urlretrieve(photo_url, "pict/downloaded_image.jpg")
-                                            print("Изображение скачано")
                                             break
 
                             for msg in messages:
@@ -103,7 +102,6 @@ for event in longpoll.listen():
                                             response = requests.get(photo_url)
                                             img = MIMEImage(response.content)
                                             email_message.attach(img)
-                                            print("Изображение прикреплено к письму")
                                             break
 
                             server = smtplib.SMTP(smtp_server, smtp_port)
@@ -111,13 +109,13 @@ for event in longpoll.listen():
                             server.login(username, password)
                             server.send_message(email_message)
                             server.quit()
-                            send_message(user_id, 'Успешно отправлено', keyboard)
+                            send_message(user_id, 'Запрос успешно отправлен разработчикам', keyboard)
                             break
             received()
 
         elif message == 'задать вопрос 📝':
             current_date = datetime.datetime.now().strftime('%Y-%m-%d')
-            send_message(user_id, 'Задайте вопрос в свободной форме 📝')
+            send_message(user_id, 'Задайте вопрос в свободной форме 📝', b_back)
             for event in longpoll.listen():
                 if event.type == VkEventType.MESSAGE_NEW and event.to_me:
                     if event.text == "Назад":
@@ -153,7 +151,7 @@ for event in longpoll.listen():
                                 send_message(user_id, f'👉{link}👈 \n По данной ссылке расположен документ, который может вам помочь!', b_back)
 
         elif message == "история обращений 🕑":
-            alls = cursor.execute(f'''SELECT date, message ,response FROM History WHERE id='{user_id}' ''')
+            alls = cursor.execute(f'''SELECT date, message ,response FROM History WHERE id='{full_name}' ''')
             send_message(user_id, f"В̲а̲ш̲а̲ и̲с̲т̲о̲р̲и̲я̲ о̲б̲р̲а̲щ̲е̲н̲и̲й̲: \n\n")
             all_history = cursor.fetchall()
             for event in all_history:
