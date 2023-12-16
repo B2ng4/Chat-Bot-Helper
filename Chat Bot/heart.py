@@ -151,7 +151,7 @@ for event in longpoll.listen():
                                 send_message(user_id, f'👉{link}👈 \n По данной ссылке расположен документ, который может вам помочь!', b_back)
 
         elif message == "история обращений 🕑":
-            alls = cursor.execute(f'''SELECT date, message ,response FROM History WHERE id='{full_name}' ''')
+            alls = cursor.execute(f'''SELECT date, message ,response FROM History WHERE username='{full_name}' ''')
             send_message(user_id, f"В̲а̲ш̲а̲ и̲с̲т̲о̲р̲и̲я̲ о̲б̲р̲а̲щ̲е̲н̲и̲й̲: \n\n")
             all_history = cursor.fetchall()
             for event in all_history:
