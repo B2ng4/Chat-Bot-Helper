@@ -9,7 +9,6 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from topics import GigResponse
-import sqlite3
 import datetime
 from better_profanity import profanity
 from urllib.request import urlretrieve

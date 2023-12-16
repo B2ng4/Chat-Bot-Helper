@@ -33,6 +33,7 @@ nvidia-nvjitlink-cu12==12.3.101
 nvidia-nvtx-cu12==12.1.105
 packaging==23.2
 profanityfilter==2.0.6
+psycopg2-binary==2.9.9
 pybind11==2.11.1
 pydantic==2.5.2
 pydantic_core==2.14.5
