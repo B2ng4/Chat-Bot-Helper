@@ -21,12 +21,12 @@ from toxic import insult
 from buttons import create_keyboard, back
 from config import host, user, db_pass, db_name, port
 import psycopg2
-
+from collections import Counter
 
 connection = psycopg2.connect(dbname="History", user='root', password=db_pass, host =host, port=port)
 connection.autocommit = True
 cursor = connection.cursor()
-cursor.execute('''CREATE TABLE IF NOT EXISTS History (id INTEGER, username TEXT NOT NULL, date TEXT NOT NULL, message TEXT NOT NULL , response TEXT NOT NULL )''')
+cursor.execute('''CREATE TABLE IF NOT EXISTS History (id INTEGER, username TEXT NOT NULL, date TEXT NOT NULL, message TEXT NOT NULL ,theme TEXT NOT NULL, response TEXT NOT NULL )''')
 
 def send_message(user_id, message, keyboard=None, template=None):
     vk.messages.send(
@@ -139,13 +139,14 @@ for event in longpoll.listen():
                                 last_name = user_get['last_name']  # Фамилия
                                 full_name = str(first_name+last_name)
                                 send_message(user_id, 'Спасибо за вопрос! Идет обработка сообщения ♾️♾️♾️.️')
-
+                                gig_rexponse = str(GigResponse(request))
+                                topic = (gig_rexponse.split("Заголовок:"))[1]
                                 link = nlp(event.text)
-                                send_message(user_id, f'Ваш запрос относится к теме: 👉{GigResponse(request)}👈\n')
+                                send_message(user_id, f'Ваш запрос относится к теме: 👉{gig_rexponse}👈\n')
                                 short_ans = shortanswer.short_answer(event.text)
                                 send_message(user_id, f"🕐 Краткий ответ:\n {short_ans}")
                                 cursor.execute(
-                                    f'''INSERT INTO History (id, username, date, message, response) VALUES ('{user_id}','{full_name}', '{current_date}','{request}','{short_ans}')''')
+                                    f'''INSERT INTO History (id, username, date, message,theme,response) VALUES ('{user_id}','{full_name}', '{current_date}','{request}', '{topic}' ,'{short_ans}')''')
                                 send_message(user_id, f'👉{link}👈 \n По данной ссылке расположен документ, который может вам помочь!', b_back)
 
         elif message == "история обращений 🕑":
@@ -158,6 +159,21 @@ for event in longpoll.listen():
                 response = event[2]
                 send_message(user_id, f'🕑{date}:\n❓Ваш запрос:  {request}\n✏️Ответ:  {response} \n \n ',b_back)
 
+        elif message == "статистика 📊":
+            alls = cursor.execute(f'''SELECT  theme  FROM History WHERE id='{user_id}' ''')
+            send_message(user_id, f"В̲а̲ш̲а̲ ̲с̲т̲а̲т̲и̲с̲т̲и̲к̲а̲ ̲з̲а̲ ̲в̲с̲е̲ ̲в̲р̲е̲м̲я̲: \n\n")
+            all_history = cursor.fetchall()
+            if len(all_history)==0:
+                send_message(user_id, f"Вы еще не задавали никаких вопросов!", b_back)
+            else:
+                mess = {}
+                tuples = all_history
+
+                counter = Counter(t.strip() for t, in tuples if t.strip())
+                send_message(user_id, f"Всего запросов:  {len(all_history)} \n\n", b_back)
+                send_message(user_id, f"П̲о̲ ̲т̲е̲м̲а̲м̲ ̲о̲б̲р̲а̲щ̲е̲н̲и̲й̲:\n̲", b_back)
+                for item, count in counter.items():
+                        send_message(user_id, f"📍 {item}: {count}\n", b_back)
 
 
         #Для частых вопросов
