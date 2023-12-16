@@ -11,7 +11,6 @@ def create_keyboard():
     keyboard.add_button('Сообщить о проблеме 🆘', color=VkKeyboardColor.NEGATIVE)
     keyboard.add_line()
     keyboard.add_button('История обращений 🕑', color=VkKeyboardColor.SECONDARY)
-    keyboard.add_button('Статистика 📊', color=VkKeyboardColor.SECONDARY)
 
     return keyboard.get_keyboard()
 
