@@ -21,6 +21,7 @@ from buttons import create_keyboard, back
 from config import host, user, db_pass, db_name, port
 import psycopg2
 from collections import Counter
+import random
 
 connection = psycopg2.connect(dbname="History", user='root', password=db_pass, host =host, port=port)
 connection.autocommit = True
@@ -31,7 +32,7 @@ def send_message(user_id, message, keyboard=None, template=None):
     vk.messages.send(
         user_id=user_id,
         message=message,
-        random_id=0,
+        random_id=random.randint(0,9999),
         keyboard=keyboard,
         template=json.dumps(template) if template is not None else None
     )
@@ -72,6 +73,7 @@ for event in longpoll.listen():
                     if event.type == VkEventType.MESSAGE_NEW and event.to_me:
                         received_message = event.text  # Текст сообщения записывается в строку
                         user_id = event.user_id
+                        insult(received_message)
                         if profanity.contains_profanity(received_message):  # Проверка на наличие нецензурных слов
                                 send_message(user_id,'❗️❗️Я не могу обработать данный запрос\nПрисутсвуют некорректные слова❗️❗️️',keyboard)
                                 break
@@ -211,7 +213,8 @@ for event in longpoll.listen():
         elif message == 'плата за капитальный ремонт':
             send_message(user_id, question8(), keyboard)
 
-
+        elif message == 'назад':
+            send_message(user_id, 'Возврат в главное меню', keyboard)
 
         else:
             send_message(user_id, 'Извините, я не понял ваш запрос. Пожалуйста, воспользуйтесь клавиатурой.', keyboard)
